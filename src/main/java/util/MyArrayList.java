@@ -43,9 +43,7 @@ public class MyArrayList<T> implements MyList<T> {
      */
     @Override
     public boolean contains(T t) {
-        for (T t1 : storage) if (t1.equals(t)) return true;
-
-        return false;
+        return indexOf(t) != -1;
     }
 
     /**
@@ -59,7 +57,7 @@ public class MyArrayList<T> implements MyList<T> {
 
         T[] newStorage = (T[]) new Object[size() + 1];
 
-        for (int i = 0; i < size(); i++) newStorage[i] = storage[i];
+        System.arraycopy(storage, 0, newStorage, 0, size());
 
         newStorage[size++] = t;
         storage = newStorage;
@@ -73,7 +71,7 @@ public class MyArrayList<T> implements MyList<T> {
      */
     @Override
     public void add(int index, T t) {
-        if (!withinList(index)) throw new IllegalArgumentException("Index input must be within list size");
+        if (index < 0 || index > size()) throw new IllegalArgumentException("Index input must be within list size");
         if (index == size()) add(t);
         else {
             T[] newStorage = (T[]) new Object[size() + 1];
@@ -118,7 +116,7 @@ public class MyArrayList<T> implements MyList<T> {
      */
     @Override
     public void remove(int index) {
-        if (!withinList(index)) throw new IllegalArgumentException("Index input must be within list size");
+        if (index < 0 || index >= size()) throw new IllegalArgumentException("Index input must be within list size");
 
         T[] newStorage = (T[]) new Object[size - 1];
 
@@ -187,7 +185,7 @@ public class MyArrayList<T> implements MyList<T> {
      */
     @Override
     public T update(int index, T t) {
-        if (!withinList(index)) throw new IllegalArgumentException("Index input must be within list size");
+        if (index < 0 || index >= size()) throw new IllegalArgumentException("Index input must be within list size");
 
         storage[index] = t;
 
@@ -202,7 +200,7 @@ public class MyArrayList<T> implements MyList<T> {
      */
     @Override
     public T get(int index) {
-        if (!withinList(index)) throw new IllegalArgumentException("Index input must be within list size");
+        if (index < 0 || index >= size()) throw new IllegalArgumentException("Index input must be within list size");
 
         return storage[index];
     }
@@ -236,7 +234,7 @@ public class MyArrayList<T> implements MyList<T> {
      */
     @Override
     public MyList<T> subList(int fromIndex, int toIndex) {
-        if (!(withinList(fromIndex) && withinList(toIndex)))
+        if ((fromIndex < 0 || fromIndex >= size()) && (toIndex < 0 || toIndex >= size()))
             throw new IllegalArgumentException("Index input must be within list size");
         if (fromIndex > toIndex) throw new IllegalArgumentException("Start index cannot be greater than end index");
 
@@ -259,15 +257,5 @@ public class MyArrayList<T> implements MyList<T> {
             sb.append(getLast());
         }
         return sb.append("}").toString();
-    }
-
-    /**
-     * <p>it assists to check the index that is valid index of the list</p>
-     *
-     * @param index input index
-     * @return true if the index is the valid index of list
-     */
-    private boolean withinList(int index) {
-        return (index >= 0 && index <= size());
     }
 }
